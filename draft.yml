@@ -1,0 +1,421 @@
+models:
+  Agence:
+    name: string:255
+    city: string:255
+    adresse: longText
+    phone: string:20
+    email: string
+    relationships:
+      hasMany: Car,Employe
+  Category:
+    type: string:100
+    relationships:
+      hasMany: Car
+  User:
+    name: string
+    email: string unique
+    phone: string:50
+    is_admin: boolean default:false
+    email_verified_at: timpstamp nullable
+    password: string
+    locale: string:4
+    softDeletes
+    relationships:
+      hasOne: Employe
+      belongsToMany: Car
+
+  Employe:
+    user_id: id foreign:users
+    role: string:30
+    birthday: timestamp
+    cni: string:20 unique
+    agence_id: id foreign:agences
+    softDeletes
+    relationships:
+      belongsTo: Agence,User
+      belongsToMany: Car
+
+  Car:
+    name: string:50
+    model: string:50
+    carNumber: integer
+    horse: integer
+    kilometers: integer
+    dor: integer
+    fuel: string:20
+    type: string:5 default:M
+    luggage: integer
+    status: enum:available,reserved,crash,reforme,inavalable
+    category_id: id foreign:categories
+    agence_id: id foreign:agences
+    in_agaence: boolean default:true
+    softDeletes
+    relationships:
+      belongsTo: Agence,Category
+      belongsToMany: User
+  Extra:
+    name: string
+    price: float
+    quantity: integer
+    softDeletes
+    relationships:
+      belongsToMany: Reseravation
+  Reservation:
+    id: id
+    car_id: id foreign:cars
+    user_id: id foreign:users
+    agent_id: id foreign:employes nullable
+    date_start: timestamp unique
+    date_back: timestamp unique
+    time_start: integer unique
+    time_back: integer unique
+    agenceBack_id: id foreign:agences
+    confiremed: boolean default:false
+    softDeletes
+    relationships:
+      belongsTo: Employe
+      belongsToMany: Extra
+
+  Extrareservation:
+    id: id
+    extra_id: id foreign:extras
+    reservation_id: id foreign:reservations
+    quantite: integer
+    totalPrice: float
+    softDeletes
+
+  Control:
+    controller_id: id foreign:employes
+    car_id: id foreign:cars
+    confirmed: boolean default:true
+    softDeletes
+    relationships:
+      hasMany: Damage
+
+  Damage:
+    type: string:255
+    description: text nullable
+    price: float
+    control_id: id foreign:controls
+    softDeletes
+    relationships:
+      belongsTo: Control
+      belongsToMany: Employe
+
+  Reformation:
+    mechanic_id: id foreign:employes
+    damage_id: id foreign:damages
+    description: text nullable
+    totalprice: float
+    softDeletes
+    relationships:
+      belongsToMany: Component
+
+  Component:
+    name: string
+    serie: string nullable
+    type: string nullable
+    color: string nullable
+    quantite: integer default:1
+    price: float
+    softDeletes
+    relationships:
+      belongsToMany: Reformation
+
+  ComponentReformation:
+    reformation_id: id foreign:reformations
+    component_id: id foreign:components
+    quantity: integer
+    priceTotal: float
+    softDeletes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+controllers:
+  Agence:
+    resource: api.index,api.show,api.update,api.store,api.destroy
+    index:
+      query: all:agences
+      resource: agences
+    store:
+      validate: agence
+      save: agence
+      resource: agence
+    show:
+      find: agence.id
+      resource: agence
+    update:
+      validate: agence
+      find: agence.id
+      update: agence
+      resource: agence
+    destroy:
+      delete: agence
+      resource: agence
+
+  Category:
+    resource: api.index,api.show,api.update,api.store,api.destroy
+    index:
+      query: all:categories
+      resouce: categories
+    store:
+      validate: category
+      save: category
+      resource: category
+    show:
+      find: category.id
+      resource: category
+    update:
+      validate: category
+      find: category.id
+      update: category
+      resource: category
+    destroy:
+      delete: category
+      resource: category
+
+  User:
+    resource: api.index,api.show,api.update,api.store,api.destroy
+    index:
+      query: all:users
+      resouce: users
+    store:
+      validate: user
+      save: user
+      resource: user
+    show:
+      find: user.id
+      resource: user
+    update:
+      validate: user
+      find: user.id
+      update: user
+      resource: user
+    destroy:
+      delete: user
+      resource: user
+
+  Employe:
+      resource: api.index,api.show,api.update,api.store,api.destroy
+      index:
+        query: all:employes
+        resouce: employes
+      store:
+        validate: employe
+        save: employe
+        resource: employe
+      show:
+        find: employe.id
+        resource: employe
+      update:
+        validate: employe
+        find: employe.id
+        update: employe
+        resource: employe
+      destroy:
+        delete: employe
+        resource: employe
+
+  Car:
+    resource: api.index,api.show,api.update,api.store,api.destroy
+    index:
+      query: all:cars
+      resouce: cars
+    store:
+      validate: car
+      save: car
+      resource: car
+    show:
+      find: car.id
+      resource: car
+    update:
+      validate: car
+      find: car.id
+      update: car
+      resource: car
+    destroy:
+      delete: car
+      resource: car
+
+  Reservation:
+    resource: api.index,api.show,api.update,api.store,api.destroy
+    index:
+      query: all:reservations
+      resouce: reservations
+    store:
+      validate: reservation
+      save: reservation
+      resource: reservation
+    show:
+      find: reservation.id
+      resource: reservation
+    update:
+      validate: reservation
+      find: reservation.id
+      update: reservation
+      resource: reservation
+    destroy:
+      delete: reservatio
+      resource: reservation
+
+  Extra:
+    resource: api.index,api.show,api.update,api.store,api.destroy
+    index:
+      query: all:extras
+      resouce: extras
+    store:
+      validate: extra
+      save: extra
+      resource: extra
+    show:
+      find: extra.id
+      resource: extra
+    update:
+      validate: extra
+      find: extra.id
+      update: extra
+      resource: extra
+    destroy:
+      delete: extra
+      resource: extra
+
+  # ExtraReservations:
+  #   resource: api.index,api.show,api.update,api.store,api.destroy
+  #   index:
+  #     query: all:extra-reservations
+  #     resouce: extra-reservations
+  #   store:
+  #     validate: extra-reservation
+  #     save: extra-reservation
+  #     resource: extra-reservation
+  #   show:
+  #     find: extra-reservation.id
+  #     resource: extra-reservation
+  #   update:
+  #     validate: extra-reservation
+  #     find: extra-reservation.id
+  #     update: extra-reservation
+  #     resource: extra-reservation
+  #   destroy:
+  #     delete: extra-reservation
+  #     resource: extra--reservation
+
+  Control:
+    resource: api.index,api.show,api.update,api.store,api.destroy
+    index:
+      query: all:controls
+      resouce: controls
+    store:
+      validate: control
+      save: control
+      resource: control
+    show:
+      find: control.id
+      resource: control
+    update:
+      validate: control
+      find: control.id
+      update: control
+      resource: control
+    destroy:
+      delete: control
+      resource: control
+
+  Damage:
+    resource: api.index,api.show,api.update,api.store,api.destroy
+    index:
+      query: all:damages
+      resouce: damages
+    store:
+      validate: damage
+      save: damage
+      resource: damage
+    show:
+      find: damage.id
+      resource: damage
+    update:
+      validate: damage
+      find: damage.id
+      update: damage
+      resource: damage
+    destroy:
+      delete: damage
+      resource: damage
+
+  Reformation:
+    resource: api.index,api.show,api.update,api.store,api.destroy
+    index:
+      query: all:reformations
+      resouce: reformations
+    store:
+      validate: reformation
+      save: reformation
+      resource: reformation
+    show:
+      find: reformation.id
+      resource: reformation
+    update:
+      validate: reformation
+      find: reformation.id
+      update: reformation
+      resource: reformation
+    destroy:
+      delete: reformation
+      resource: reformation
+
+  Component:
+    resource: api.index,api.show,api.update,api.store,api.destroy
+    index:
+      query: all:components
+      resouce: components
+    store:
+      validate: component
+      save: component
+      resource: component
+    show:
+      find: component.id
+      resource: component
+    update:
+      validate: component
+      find: component.id
+      update: component
+      resource: component
+    destroy:
+      delete: component
+      resource: component
+
+  # ComponentReservation:
+  #   resource: api.index,api.show,api.update,api.store,api.destroy
+  #   index:
+  #     query: all:component-reservations
+  #     resouce: component-reservations
+  #   store:
+  #     validate: component-reservation
+  #     save: component-reservation
+  #     resource: component-reservation
+  #   show:
+  #     find: component-reservation.id
+  #     resource: component-reservation
+  #   update:
+  #     validate: component-reservation
+  #     find: component-reservation.id
+  #     update: component-reservation
+  #     resource: component-reservation
+  #   destroy:
+  #     delete: component-reservation
+  #     resource: component-reservation
