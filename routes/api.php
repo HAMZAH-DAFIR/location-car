@@ -37,7 +37,7 @@ Route::apiResource('agence', AgenceController::class);
 
 // Route::apiResource('employe', EmployeController::class);
 
-// Route::apiResource('car', CarController::class);
+Route::apiResource('car', CarController::class);
 
 // Route::apiResource('reservation', ReservationController::class);
 
