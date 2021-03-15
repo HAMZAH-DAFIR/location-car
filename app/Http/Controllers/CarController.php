@@ -6,6 +6,7 @@ use App\Http\Requests\CarStoreRequest;
 use App\Http\Requests\CarUpdateRequest;
 use App\Http\Resources\CarResource;
 use App\Models\Car;
+use Exception;
 use Illuminate\Http\Request;
 
 class CarController extends Controller
@@ -16,12 +17,16 @@ class CarController extends Controller
      */
     public function index(Request $request)
     {
-        $cars = Car::all()->paginate(10);
+        try{
+        $cars = Car::paginate(10);
         if(count($cars)){
-            return  CarController::collection($cars);
+            return  CarResource::collection($cars);
         }else{
             return response()->json(["message"=>"note found"],404);
         }
+    }catch(Exception $e){
+        return response()->json(["message"=>$e->getMessage()],500);
+    }
 
     }
 
