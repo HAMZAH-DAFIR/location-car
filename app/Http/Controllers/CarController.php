@@ -16,7 +16,13 @@ class CarController extends Controller
      */
     public function index(Request $request)
     {
-        $cars = Car::all();
+        $cars = Car::all()->paginate(10);
+        if(count($cars)){
+            return  CarController::collection($cars);
+        }else{
+            return response()->json(["message"=>"note found"],404);
+        }
+
     }
 
     /**
