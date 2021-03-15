@@ -36,18 +36,22 @@ class AgenceController extends Controller
      */
     public function store(AgenceStoreRequest $request)
     {
-
-        dd("hello");
         try {
-
-            if(!$request->validated->fails){
+            $validate=validator($request->all());
+            if(!$validate->fails()){
                 $agence = Agence::create($request->validated());
-                return response()->json(["message"=>"agence was created"]);
+
+                if($agence){
+                    return response()->json(["message"=>"agence was Created"],201);
+                }else{
+                    return response()->json(["message"=>"agence doesn't Created"],200);
+                }
+
             }else{
-                return response()->json(["message"=>"exception"]);
+                return response()->json($validate);
             }
         } catch (Throwable $th) {
-            return response()->json(["message"=>"exception"]);
+            return response()->json(["message"=>"exception"],404);
         }
     }
 

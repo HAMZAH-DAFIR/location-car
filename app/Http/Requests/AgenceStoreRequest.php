@@ -24,7 +24,7 @@ class AgenceStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string','min:4', 'max:255'],
             'city' => ['required', 'string', 'max:255'],
             'adresse' => ['required', 'string'],
             'phone' => ['required', 'string', 'max:20'],
