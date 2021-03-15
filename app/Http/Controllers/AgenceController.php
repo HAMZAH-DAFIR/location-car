@@ -62,9 +62,16 @@ class AgenceController extends Controller
      */
     public function show(Request $request, $id)
     {
+        try{
         $agence = Agence::find($id);
-
-        return new AgenceResource($agence);
+        if(isset($agence)){
+            return new AgenceResource($agence);
+        }else{
+            return response()->json(["message"=>"not found"],200);
+        }
+    }catch(Exception $e){
+        return response()->json(["errors"=>$e->getMessage()]);
+    }
     }
 
     /**
@@ -74,11 +81,17 @@ class AgenceController extends Controller
      */
     public function update(AgenceUpdateRequest $request,$id)
     {
+        try{
         $agence = Agence::find($id);
-
-        $agence->update($request->validated());
-
-        return new AgenceResource($agence);
+        if($agence){
+            $agence->update($request->validated());
+            return new AgenceResource($agence);
+        }else{
+            return response()->json(["message"=>"agence not found"],404);
+        }
+        }catch(Exception $e){
+            return response($e->getMessage(),404);
+        }
     }
 
     /**
@@ -88,9 +101,15 @@ class AgenceController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        $agence=Agence::findOrfail($id);
-        $agence->delete();
+        $agence=Agence::find($id);
+        if($agence){
+            $agence->delete();
+            return response()->json(["message"=>"the agence was deleted succesfully"]);
+        }else{
+            return response()->json(["message"=>"agence not found"],404);
+        }
 
-        return new AgenceResource($agence);
+
+
     }
 }
