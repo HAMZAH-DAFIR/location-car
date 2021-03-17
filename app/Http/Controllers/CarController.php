@@ -37,8 +37,11 @@ class CarController extends Controller
     public function store(CarStoreRequest $request)
     {
         $car = Car::create($request->validated());
-
-        return new CarResource($car);
+        if($car){
+            return new CarResource($car);
+        }else{
+            return response()->json(["message"=>"car doesn't stored)]);
+        
     }
 
     /**
