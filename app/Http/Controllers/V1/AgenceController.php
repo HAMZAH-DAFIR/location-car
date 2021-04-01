@@ -4,35 +4,25 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Throwable;
-use App\Models\User;
 use App\Models\Agence;
 use Illuminate\Http\Request;
 use App\Http\Resources\AgenceResource;
 use App\Http\Requests\AgenceStoreRequest;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\AgenceUpdateRequest;
 
 class AgenceController extends Controller
 {
-    public function __construct(){
-        // $this->middleware('auth:api')->except(['index','store']);
-        // $this->authorizeResource(Agence::class,'agence');
-    }
     /**
      * @param \Illuminate\Http\Request $request
      * @return \App\Http\Resources\AgenceResource
      */
-    public function index(Agence $agence)
+    public function index(Request $request)
     {
+        dd('hello');
         try{
-            // $agences = Agence::paginate(5);
-            $agences=$agence->get();
-            // $agences=Agence::with('employes')->get();
-            // $this->authorize('update',$agences);
+            $agences = Agence::paginate(5);
             if(isset($agences)){
-                // dd($agences);
                 return  AgenceResource::collection($agences);
-                // return response()->json(["agences"=>$agences]);
             }else{
                 return response()->json(["message"=>"Pas d'agence "]);
             }
@@ -48,16 +38,21 @@ class AgenceController extends Controller
     public function store(AgenceStoreRequest $request)
     {
         try {
+            $validate=validator($request->all());
+            if(!$validate->fails()){
                 $agence = Agence::create($request->validated());
 
-                if ($agence) {
-                    return new AgenceResource($agence);
+                if($agence){
+                    return response()->json(["message"=>"agence was Created"],201);
+                }else{
+                    return response()->json(["message"=>"agence doesn't Created"],200);
                 }
-                else {
-                    return response()->json(["message"=>"agence doesn't Created"],404);
-                }
+
+            }else{
+                return response()->json($validate);
+            }
         } catch (Throwable $th) {
-            return response()->json(["messages"=>$th->getMessage()],404);
+            return response()->json(["message"=>"exception"],404);
         }
     }
 
@@ -66,14 +61,11 @@ class AgenceController extends Controller
      * @param \App\Models\Agence $agence
      * @return \App\Http\Resources\AgenceResource
      */
-    public function show(Request $request,Agence $agence)
+    public function show(Request $request, $id)
     {
-        dd($agence);
-        // $agence = Agence::find($id);
-        // $this->authorize('update',$agence);
-        if($agence)
+        $agence = Agence::find($id);
+
         return new AgenceResource($agence);
-        return response()->json(["error"=>"agenece Not Found"],404);
     }
 
     /**
@@ -84,7 +76,7 @@ class AgenceController extends Controller
     public function update(AgenceUpdateRequest $request,$id)
     {
         $agence = Agence::find($id);
-        if (isset($agence))
+
         $agence->update($request->validated());
 
         return new AgenceResource($agence);
@@ -97,17 +89,9 @@ class AgenceController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        try{
-        $agence=Agence::find($id);
-        if($agence){
-            $agence->delete();
-            return new AgenceResource($agence);
+        $agence=Agence::findOrfail($id);
+        $agence->delete();
 
-        }else{
-            return response()->json(["message"=>"agence not found"],404);
-        }
-        }catch(Exception $e){
-            return response()->json(["Exception"=>$e->getMessage()],500);
-        }
+        return new AgenceResource($agence);
     }
 }

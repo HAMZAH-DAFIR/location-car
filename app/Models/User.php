@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
-class User extends Model
+
+class User extends Model implements AuthenticatableContract
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes,HasApiTokens,Authenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -55,4 +59,5 @@ class User extends Model
     {
         return $this->belongsToMany(\App\Models\Car::class);
     }
+
 }

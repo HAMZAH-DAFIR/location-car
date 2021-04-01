@@ -6,7 +6,6 @@ use App\Http\Requests\CarStoreRequest;
 use App\Http\Requests\CarUpdateRequest;
 use App\Http\Resources\CarResource;
 use App\Models\Car;
-use App\Models\Category;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -53,7 +52,7 @@ class CarController extends Controller
     public function show(Request $request,$id)
     {
         $car = Car::find($id);
-        if($car)
+
         return new CarResource($car);
     }
 
@@ -76,19 +75,10 @@ class CarController extends Controller
      * @param \App\Models\Car $car
      * @return \App\Http\Resources\CarResource
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, Car $car)
     {
-        $car=Car::find($id);
-        if($car)
         $car->delete();
-        return new CarResource($car);
-    }
-    public function addInCategory(Request $request){
-        $car=Car::find($request->id);
-        $category= Category::find($request->category_id);
-        if ($car && $category) {
 
-            $car->category()->associate($category)->save();
-        }
+        return new CarResource($car);
     }
 }

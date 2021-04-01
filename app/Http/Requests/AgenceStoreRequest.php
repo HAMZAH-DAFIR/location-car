@@ -28,7 +28,7 @@ class AgenceStoreRequest extends FormRequest
             'city' => ['required', 'string', 'max:255'],
             'adresse' => ['required', 'string'],
             'phone' => ['required', 'string', 'max:20'],
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email','unique:agences'],
         ];
     }
 }

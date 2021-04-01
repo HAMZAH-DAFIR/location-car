@@ -6,7 +6,6 @@ use App\Http\Requests\CategoryStoreRequest;
 use App\Http\Requests\CategoryUpdateRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use Exception;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -18,8 +17,6 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $categories = Category::all();
-        if(count($categories)>0)
-        return CategoryResource::collection($categories);
     }
 
     /**
@@ -28,13 +25,9 @@ class CategoryController extends Controller
      */
     public function store(CategoryStoreRequest $request)
     {
-        try{
-            $category = Category::create($request->validated());
-            return new CategoryResource($category);
-        }catch(Exception $e){
-            return response()->json(["exception"=>$e->getMessage()]);
-        }
+        $category = Category::create($request->validated());
 
+        return new CategoryResource($category);
     }
 
     /**

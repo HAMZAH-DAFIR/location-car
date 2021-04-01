@@ -41,4 +41,5 @@ class Agence extends Model
     {
         return $this->hasMany(\App\Models\Employe::class);
     }
+
 }

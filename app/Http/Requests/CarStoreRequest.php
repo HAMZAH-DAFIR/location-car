@@ -36,7 +36,7 @@ class CarStoreRequest extends FormRequest
             'status' => ['required', 'in:available,reserved,crash,reforme,inavalable'],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'agence_id' => ['required', 'integer', 'exists:agences,id'],
-            'in_agaence' => ['required'],
+            'in_agaence' => ['required','boolean'],
         ];
     }
 }
