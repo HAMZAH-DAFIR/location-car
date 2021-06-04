@@ -52,7 +52,7 @@ class CarController extends Controller
     public function show(Request $request,$id)
     {
         $car = Car::find($id);
-
+        if(!$car) return response()->json(['messege'=>'not found']);
         return new CarResource($car);
     }
 
