@@ -52,7 +52,9 @@ class CarController extends Controller
     public function show(Request $request,$id)
     {
         $car = Car::find($id);
-
+        if(!$car){
+            return response()->json(['message'=>'not found'],404);
+        }
         return new CarResource($car);
     }
 
@@ -64,7 +66,9 @@ class CarController extends Controller
     public function update(CarUpdateRequest $request,$id)
     {
         $car = Car::find($id);
-
+        if(!$car){
+            return response()->json(['message'=>'not found'],404);
+        }
         $car->update($request->validated());
 
         return new CarResource($car);
